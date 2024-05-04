@@ -10,7 +10,7 @@
 
 <p align="center">
 
-> [![senai_automacao](https://github.com/cl0uD-C1SC0/github_actions_first/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/cl0uD-C1SC0/github_actions_first/actions/workflows/main.yml) <img src="https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=green" width="130"> <img src="https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white" width="55"> <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" width="80"> <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white" width="60"> <img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white" width="87">
+> [![senai_automacao](https://github.com/cl0uD-C1SC0/github_actions_first/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/cl0uD-C1SC0/github_actions_first/actions/workflows/main.yml) <img src="https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=green" width="130"> <img src="https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white" width="55"> <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" width="80"> <img src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white" width="60">
 </p>
 
 ## Índice
@@ -26,7 +26,6 @@ Este repositório contém o código e as configurações necessárias para impla
 # 01 - Execução
 # Para executar este projeto, siga os passos abaixo:
 
-<h3>
 
 1.  Criar repositório manualmente no GitHub
 
@@ -100,7 +99,6 @@ AWS_ACCESS_KEY_ID
 
 Depois de todos os passos concluídos com sucesso, seu portfólio estará implantado e em execução.
 
-</h3> <br>
 
 <div align="center">
     <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" height="65">
@@ -111,8 +109,6 @@ Depois de todos os passos concluídos com sucesso, seu portfólio estará implan
 
 # 02 - Dockerfile
 * O Dockerfile contém as instruções para construir a imagem Docker necessária para executar a aplicação. Ele instala as dependências e configura a aplicação para ser executada.
-
-<h2>
 
 ```
 FROM alpine:latest as builder
@@ -212,16 +208,16 @@ CMD ["python3", "app.py"]
 ```
 > Executa dos comandos python3 app.py para rodar a aplicação dentro do container 
 
-</h3> <br>
+
 <div align="center">
-<img src="./images/GitFlow-ImageExample.png" width="700" height="400">
+    <img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white" height="65">
+    <img src="https://img.shields.io/badge/python-%233776AB.svg?style=for-the-badge&logo=python&logoColor=white" height="65">
+    <img src="https://img.shields.io/badge/dockerfile-%232496ED.svg?style=for-the-badge&logo=docker&logoColor=white" height="65">
 </div>
-<br><br><br>
+<br><br>
 
 
 # 03 - Terraform
-
-<h2>
 
 ```
 terraform {
@@ -390,6 +386,12 @@ tags = {
   }
 ```
 > Define tags para a instância EC2, fornecendo metadados para identificar e categorizar a instância.
+
+<div align="center">
+    <img src="https://img.shields.io/badge/terraform-%23623CE4.svg?style=for-the-badge&logo=terraform&logoColor=white" height="65">
+    <img src="https://img.shields.io/badge/aws-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white" height="65">
+</div>
+<br><br>
 
 # 04 - Workflows
 
@@ -571,3 +573,9 @@ steps:
         run: echo "Portifolio e do job ${{ job.status }}."
 ```
 > Este é o último passo chamado "Finalização" que apenas exibe uma mensagem indicando a conclusão do workflow e o status do job.
+
+<div align="center">
+    <img src="https://img.shields.io/badge/workflow-%231f8b4c.svg?style=for-the-badge&logo=github-actions&logoColor=white" height="65">
+    <img src="https://img.shields.io/badge/yml-%230055AF.svg?style=for-the-badge&logo=yaml&logoColor=white" height="65"></div>
+<br><br>
+
