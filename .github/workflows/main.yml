@@ -1,0 +1,111 @@
+name: Portifolio_senai
+on:
+  push:
+    branches:
+      - "main"
+      
+jobs:
+  portifolio:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: INSTALL PACKAGES
+        run: |
+          sudo apt update -y
+          sudo apt-get install figlet -y
+          curl https://static.snyk.io/cli/latest/snyk-linux -o snyk
+          chmod +x ./snyk
+          mv ./snyk /usr/local/bin/
+
+      - name: Snyk Auth
+        run: |
+          snyk -d auth $SNYK_TOKEN
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_AUTH_TOKEN }}
+
+      - name: DockerLint (CI)
+        run: |
+          echo "DOCKERLINT" | figlet -f small
+          docker run --rm -i hadolint/hadolint < Dockerfile || true
+
+      - name: Configurar AWS CLI
+        if: always()
+        run: |
+          echo "AWS CLI" | figlet -f small
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region us-east-1
+          export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+          export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+          export AWS_DEFAULT_REGION="us-east-1"
+          export AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          
+      - name: Docker Login
+        if: always()
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Docker build (CI)
+        if: always()
+        run: |
+          echo $AWS_ACCESS_KEY_ID
+          docker build --build-arg AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID --build-arg AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY --build-arg AWS_DEFAULT_REGION="us-east-1" -t portifolio .
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Docker Analysis (CI)
+        if: always()
+        run: |
+          echo "VULNERABILIDADES" | figlet -c -f small
+          snyk container test portifolio:latest || true
+
+      - name: Docker Push (CD)
+        if: always()
+        run: |
+          # Extrair os 7 primeiros caracteres do SHA do commit
+          COMMIT_SHA=$(echo $GITHUB_SHA | cut -c 1-7)
+          echo "Commit SHA: $COMMIT_SHA"
+      
+          # Tag da imagem com o commit SHA
+          docker tag portifolio:latest euumarceloo/portifolio:$COMMIT_SHA
+          # Push da imagem com a tag do commit
+          docker push euumarceloo/portifolio:$COMMIT_SHA
+      
+          # Atualizar a imagem "latest" para a nova versão
+          docker tag portifolio:latest euumarceloo/portifolio:latest
+          docker push euumarceloo/portifolio:latest
+
+      - name: Copy EC2 Terraform file
+        run: |
+          cp app/aws/ec2.tf .
+
+      - name: Install Terraform
+        run: |
+          wget https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip
+          unzip terraform_1.0.0_linux_amd64.zip
+          sudo mv terraform /usr/local/bin/
+      
+      - name: Deploy EC2 using Terraform
+        if: always()
+        run: |
+          echo "Deploying EC2" | figlet -f small
+          terraform init
+          terraform apply -auto-approve \
+            -var="AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -var="AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -var="AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}"
+          PUBLIC_IP=$(terraform output -json public_ip | jq -r '.')
+          echo "$PUBLIC_IP" | figlet -f small
+      
+      - name: Finalização
+        run: echo "Portifolio e do job ${{ job.status }}."
