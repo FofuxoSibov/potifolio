@@ -16,7 +16,7 @@
 ## Índice
 * [01 - Execução](#01---Execução)
 * [02 - Dockerfile](#02---Dockerfile)
-* [03 - Terraform?](#03---Terraform)
+* [03 - Terraform](#03---Terraform)
 * [04 - Workflows](#04---Workflows)
 
 <br><br>
